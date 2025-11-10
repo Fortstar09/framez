@@ -7,6 +7,8 @@ import { ConvexAuthProvider } from '@convex-dev/auth/react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ThemeProvider } from '@/theme/theme-provider';
 import 'react-native-reanimated';
+import './global.css';
+
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
   unsavedChangesWarning: false,

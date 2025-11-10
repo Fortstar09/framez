@@ -1,7 +1,7 @@
 import { SignOutButton } from "@/components/auth/singout";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/components/ui/link";
-import { ModeToggle } from "@/components/ui/mode-toggle";
 import { ScrollView } from "@/components/ui/scroll-view";
 import { Text } from "@/components/ui/text";
 import { View } from "@/components/ui/view";
@@ -29,16 +29,21 @@ export default function HomeScreen() {
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerContent}>
-            <Text variant="heading">Framez</Text>
-
-            <ModeToggle />
-      
+            <Text variant="heading" style={{color :"#FF6B6B"}} >Framez</Text>
+            <Avatar>
+              <AvatarImage
+                source={{
+                  uri: "https://avatars.githubusercontent.com/u/99088394?v=4",
+                }}
+              />
+              <AvatarFallback>AB</AvatarFallback>
+            </Avatar>
           </View>
         </View>
 
         {/* Hero Section */}
         <View style={styles.heroSection}>
-          <Text variant="heading" style={styles.heroTitle}>
+          <Text variant="heading" className="">
             Welcome to BNA UI
           </Text>
           <Text variant="subtitle" style={styles.heroSubtitle}>
@@ -90,29 +95,6 @@ export default function HomeScreen() {
         </View>
 
         <SignOutButton />
-        <View style={styles.gettingStartedSection}>
-          <View
-            style={[
-              styles.gettingStartedCard,
-              { backgroundColor: cardColor, borderColor },
-            ]}
-          >
-            <View style={styles.terminalHeader}>
-              <Terminal size={20} color={primaryColor} />
-              <Text variant="body" style={styles.terminalTitle}>
-                Add Components
-              </Text>
-            </View>
-            <View style={styles.codeBlock}>
-              <Text variant="caption" style={styles.bashCommand}>
-                npx bna-ui add avatar
-              </Text>
-            </View>
-            <Text variant="caption" style={styles.installDescription}>
-              Add components to your project with a single command
-            </Text>
-          </View>
-        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -129,7 +111,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-
   },
   heroSection: {
     paddingVertical: 30,

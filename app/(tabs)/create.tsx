@@ -2,16 +2,17 @@ import { ModeToggle } from '@/components/ui/mode-toggle';
 import { ScrollView } from '@/components/ui/scroll-view';
 import { Text } from '@/components/ui/text';
 import { View } from '@/components/ui/view';
-import { useUserStore } from '@/store/useUserStore';
+import { api } from '@/convex/_generated/api';
 
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { useQuery } from 'convex/react';
 
 
-export default function ProfileScreen() {
+export default function CreatePost() {
   // const router = useRouter();
   const bottom = useBottomTabBarHeight();
 
-const user = useUserStore((state) => state.currentUser);
+const currentUser = useQuery(api.users.getUserInfo);
   // const allTodos = useQuery() 
   return (
     <ScrollView
@@ -37,10 +38,11 @@ const user = useUserStore((state) => state.currentUser);
           <ModeToggle />
         </View>
         <View>
-          <Text variant='heading'>{user ? user.name : 'Hello'}</Text>
-          <Text variant='heading'>{user ? user.email : 'Hello'}</Text>
-          <Text variant='heading'>{user ? user.gender : 'Hello'}</Text>
-          <Text variant='heading'>{user ? user.name : 'Hello'}</Text>
+          <Text variant='heading'>{currentUser ? currentUser.name : 'Hello'}</Text>
+          <Text variant='heading'>{currentUser ? currentUser.email : 'Hello'}</Text>
+          <Text variant='heading'>{currentUser ? currentUser.gender : 'Hello'}</Text>
+          <Text variant='heading'>{currentUser ? currentUser.image : 'Hello'}</Text>
+          <Text variant='heading'>{currentUser ? currentUser.name : 'Hello'}</Text>
         </View>
       </View>
     </ScrollView>

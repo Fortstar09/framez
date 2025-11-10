@@ -29,6 +29,7 @@ export interface InputProps extends Omit<TextInputProps, 'style'> {
   rows?: number; // Only used when type="textarea"
 }
 
+// eslint-disable-next-line react/display-name
 export const Input = forwardRef<TextInput, InputProps>(
   (
     {
@@ -393,6 +394,7 @@ export interface GroupedInputItemProps extends Omit<TextInputProps, 'style'> {
   rows?: number; // Only used when type="textarea"
 }
 
+// eslint-disable-next-line react/display-name
 export const GroupedInputItem = forwardRef<TextInput, GroupedInputItemProps>(
   (
     {

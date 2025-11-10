@@ -52,7 +52,7 @@ const sizeConfig: Record<SpinnerSize, SpinnerConfig> = {
     gap: 8,
     thickness: 2,
   },
-  lg: { size: 48, iconSize: 48, fontSize: 16, gap: 10, thickness: 3 },
+  lg: { size: 50, iconSize: 50, fontSize: 20, gap: 10, thickness: 5 },
   icon: { size: 24, iconSize: 24, fontSize: FONT_SIZE, gap: 8, thickness: 2 },
 };
 

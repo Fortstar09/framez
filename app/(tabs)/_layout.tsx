@@ -1,103 +1,165 @@
-import React from 'react';
-import { Tabs } from 'expo-router';
-import { BlurView } from 'expo-blur';
-import { Home, Stars, UserCircle2 } from 'lucide-react-native';
-import { Platform, StyleSheet } from 'react-native';
-import { PlatformPressable } from '@react-navigation/elements';
-import { Authenticated, Unauthenticated, AuthLoading } from 'convex/react';
-import { useColor } from '@/hooks/useColor';
-import { Icon } from '@/components/ui/icon';
-import { View } from '@/components/ui/view';
-import { Auth } from '@/components/auth/auth';
-import { Spinner } from '@/components/ui/spinner';
-import * as Haptics from 'expo-haptics';
+import React, { useEffect } from "react";
+import { Tabs } from "expo-router";
+import { BlurView } from "expo-blur";
+import {
+  CirclePlus,
+  Home,
+  Stars,
+  UserCircle2,
+} from "lucide-react-native";
+import { Platform, StyleSheet, useColorScheme } from "react-native";
+import { PlatformPressable } from "@react-navigation/elements";
+import { Authenticated, Unauthenticated, AuthLoading, useQuery } from "convex/react";
+import { useColor } from "@/hooks/useColor";
+import { Icon } from "@/components/ui/icon";
+import { View } from "@/components/ui/view";
+import { Auth } from "@/components/auth/auth";
+import { Spinner } from "@/components/ui/spinner";
+import * as Haptics from "expo-haptics";
+import { api } from "@/convex/_generated/api";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function TabLayout() {
-  const primary = useColor('primary');
-
   return (
     <View style={{ flex: 1 }}>
       <AuthLoading>
         <View
-          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
         >
-          <Spinner size='lg' variant='circle' color='#F8D534' />
+          <Spinner size="lg" variant="circle" color="#F8D534" />
         </View>
       </AuthLoading>
+
       <Unauthenticated>
         <Auth />
       </Unauthenticated>
+
       <Authenticated>
-        <Tabs
-          screenOptions={{
-            tabBarActiveTintColor: primary,
-            headerShown: false,
-            tabBarButton: (props) => (
-              <PlatformPressable
-                {...props}
-                onPressIn={(ev) => {
-                  if (process.env.EXPO_OS === 'ios') {
-                    // Add a soft haptic feedback when pressing down on the tabs.
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                  }
-                  props.onPressIn?.(ev);
-                }}
-              />
-            ),
-            tabBarBackground: () => {
-              if (Platform.OS === 'ios') {
-                return (
-                  <BlurView
-                    tint='systemChromeMaterial'
-                    intensity={100}
-                    style={StyleSheet.absoluteFill}
-                  />
-                );
-              }
-
-              // On Android & Web: no background
-              return null;
-            },
-            tabBarStyle: Platform.select({
-              ios: {
-                // Use a transparent background on iOS to show the blur effect
-                position: 'absolute',
-              },
-              default: {},
-            }),
-          }}
-        >
-          <Tabs.Screen
-            name='index'
-            options={{
-              title: 'Home',
-              tabBarIcon: ({ color }) => (
-                <Icon name={Home} size={24} color={color} />
-              ),
-            }}
-          />
-
-          <Tabs.Screen
-            name='explore'
-            options={{
-              title: 'Explore',
-              tabBarIcon: ({ color }) => (
-                <Icon name={Stars} size={24} color={color} />
-              ),
-            }}
-          />
-
-          <Tabs.Screen
-            name='profile'
-            options={{
-              title: 'Profile',
-              tabBarIcon: ({ color }) => (
-                <Icon name={UserCircle2} size={24} color={color} />
-              ),
-            }}
-          />
-        </Tabs>
+        <TabSubLayout />
       </Authenticated>
     </View>
   );
 }
+
+const TabSubLayout = () => {
+  const primary = useColor("primary");
+  const theme = useColorScheme();
+  const isDark = theme === "dark";
+
+  const setCurrentUser = useUserStore((state) => state.setCurrentUser);
+
+  const currentUser = useQuery(api.users.getUserInfo);
+
+    useEffect(() => {
+    if (currentUser) {
+      setCurrentUser(currentUser);
+    }
+  }, [currentUser, setCurrentUser]);
+  
+
+  return (
+    <Tabs
+      screenOptions={{
+        tabBarShowLabel: false,
+        tabBarItemStyle: {
+          width: "100%",
+          height: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+          paddingHorizontal: 10,
+          paddingVertical: 10,
+        },
+        tabBarActiveTintColor: primary,
+        headerShown: false,
+        tabBarButton: (props) => (
+          <PlatformPressable
+            {...props}
+            onPressIn={(ev) => {
+              if (process.env.EXPO_OS === "ios") {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              }
+              props.onPressIn?.(ev);
+            }}
+          />
+        ),
+        tabBarBackground: () => {
+          if (Platform.OS === "ios") {
+            return (
+              <BlurView
+                tint={
+                  isDark
+                    ? "systemChromeMaterialDark"
+                    : "systemChromeMaterialLight"
+                }
+                intensity={100}
+                style={StyleSheet.absoluteFill}
+              />
+            );
+          }
+          return null;
+        },
+        tabBarStyle: {
+          position: "absolute",
+          bottom: 35,
+          width: "80%",
+          left: 20,
+          right: 20,
+          height: 60,
+          borderRadius: 24,
+          borderWidth: 1,
+          borderColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.1)",
+          backgroundColor: isDark
+            ? "rgba(20,20,20,0.9)"
+            : "rgba(255,255,255,0.9)",
+          alignSelf: "center",
+          // shadow removed completely
+          shadowColor: "transparent",
+          shadowOpacity: 0,
+          shadowRadius: 0,
+          elevation: 0,
+        },
+      }}
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: "Home",
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Icon name={Home} size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="create"
+        options={{
+          title: "Create",
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Icon name={CirclePlus} size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="explore"
+        options={{
+          title: "Explore",
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Icon name={Stars} size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Icon name={UserCircle2} size={24} color={color} />
+          ),
+        }}
+      />
+    </Tabs>
+  );
+};
