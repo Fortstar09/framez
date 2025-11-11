@@ -1,23 +1,19 @@
 import PostCard from "@/components/PostCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ModeToggle } from "@/components/ui/mode-toggle";
 import { ScrollView } from "@/components/ui/scroll-view";
 import { Text } from "@/components/ui/text";
 import { View } from "@/components/ui/view";
 import { useColor } from "@/hooks/useColor";
 import { useUserStore } from "@/store/useUserStore";
-import { darkColors, lightColors } from "@/theme/colors";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { Dimensions, Image, StyleSheet } from "react-native";
+import {  lightColors } from "@/theme/colors";
+import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
 export default function HomeScreen() {
   const user = useUserStore((state) => state.currentUser);
 
-  const cardColor = useColor("card");
   const borderColor = useColor("border");
-  const primaryColor = useColor("primary");
   const image: string = "";
 
   return (
