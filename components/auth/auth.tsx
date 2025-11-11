@@ -1,21 +1,14 @@
-import { View } from "@/components/ui/view";
-
 import { ScrollView } from "@/components/ui/scroll-view";
 // import { AvoidKeyboard } from "@/components/ui/avoid-keyboard";
 import { Password } from "@/components/auth/password";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export const Auth = () => {
   return (
-    <View style={{ flex: 1 }}>
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 320 }}
-        keyboardShouldPersistTaps="handled"
-      >
-        <Password />
-      </ScrollView>
-
-      {/* <AvoidKeyboard /> */}
-    </View>
+    <SafeAreaView
+      style={{ flex: 1, justifyContent: "center" }}
+    >
+      <Password />
+    </SafeAreaView>
   );
 };

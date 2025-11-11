@@ -1,18 +1,35 @@
 import { useState } from "react";
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import { icons } from "../constants";
+import { useColor } from "@/hooks/useColor";
 
 interface FormFieldProps {
-    title: string;
-    value: string;
-    placeholder?: string;
-    handleChangeText: (text: string) => void;
-    otherStyles?: string;
-    keyboardType?: "default" | "email-address" | "numeric" | "phone-pad" | "ascii-capable" | "numbers-and-punctuation" | "url" | "name-phone-pad" | "decimal-pad" | "twitter" | "web-search";
+  title: string;
+  value: string;
+  placeholder?: string;
+  handleChangeText: (text: string) => void;
+  otherStyles?: string;
+  keyboardType?:
+    | "default"
+    | "email-address"
+    | "numeric"
+    | "phone-pad"
+    | "ascii-capable"
+    | "numbers-and-punctuation"
+    | "url"
+    | "name-phone-pad"
+    | "decimal-pad"
+    | "twitter"
+    | "web-search";
 }
-
-
 
 const FormField = ({
   title,
@@ -24,22 +41,28 @@ const FormField = ({
 }: FormFieldProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
-  return (
-        <View style={[styles.container]}>
-      <Text style={styles.label}>{title}</Text>
+  const borderColor = useColor("border");
+  const textColor = useColor("text");
+  const bgColor = useColor("background");
 
-      <View style={styles.inputContainer}>
+  return (
+    <View style={[styles.container]}>
+      <Text style={[styles.label, {color:textColor}]}>{title}</Text>
+
+      <View
+        style={[styles.inputContainer, , { borderColor, backgroundColor: bgColor }]}
+      >
         <TextInput
           style={styles.input}
           value={value}
           placeholder={placeholder}
-          placeholderTextColor="#7B7B8B"
+          placeholderTextColor={textColor}
           onChangeText={handleChangeText}
-          secureTextEntry={title === 'Password' && !showPassword}
+          secureTextEntry={title === "Password" && !showPassword}
           {...props}
         />
 
-        {title === 'Password' && (
+        {title === "Password" && (
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
             <Image
               source={showPassword ? icons.eyeHide : icons.eye}
@@ -61,25 +84,22 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    color: '#4B5563',
-    fontFamily: 'Poppins-Medium',
     marginBottom: 8,
+    opacity:0.7
   },
   inputContainer: {
-    width: '100%',
+    width: "100%",
     height: 48,
     paddingHorizontal: 16,
-    backgroundColor: '#1A1A1A',
     borderRadius: 8,
-    borderWidth: 2,
-    borderColor: 'rgba(147, 197, 253, 0.3)', // primary/30 equivalent
-    flexDirection: 'row',
-    alignItems: 'center',
+    borderWidth: 1,
+    flexDirection: "row",
+    alignItems: "center",
   },
   input: {
     flex: 1,
-    color: '#000',
-    fontFamily: 'Poppins-SemiBold',
+    color: "#000",
+    fontFamily: "Poppins-SemiBold",
     fontSize: 16,
   },
   icon: {

@@ -1,15 +1,17 @@
 import React, { useState } from "react";
+import { View, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from "react-native";
 import { useAuthActions } from "@convex-dev/auth/react";
-import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
-import { Input } from "@/components/ui/input";
 import FormField from "../FormField";
+import { Button } from "@/components/ui/button";
+import { lightColors } from "@/theme/colors";
+import { useColor } from "@/hooks/useColor";
 
 type AuthStep = "signIn" | "signUp";
 
 export const Password = () => {
   const { signIn } = useAuthActions();
+  const textColor = useColor("text");
 
   const [step, setStep] = useState<AuthStep>("signIn");
   const [name, setName] = useState("");
@@ -68,62 +70,92 @@ export const Password = () => {
   const isSigningIn = step === "signIn";
 
   return (
-    <Card>
-      <CardHeader>
-        <CardDescription style={{ textAlign: "center" }}>
-          {isSigningIn
-            ? "Welcome back! Login to continue."
-            : "Create an account to get started."}
-        </CardDescription>
-      </CardHeader>
-      <CardContent style={{ gap: 16 }}>
-        {!isSigningIn && (
-          <Input
-            value={name}
-            variant="outline"
-            placeholder="Username"
-            onChangeText={setName}
-            autoCapitalize="words"
-            autoCorrect={false}
-            editable={!loading}
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <View style={styles.innerContainer}>
+        <Text variant="heading" style={[styles.title, {color:textColor}]}>{isSigningIn ? "Welcome back" : "Create an account"}</Text>
+
+        <View style={styles.form}>
+          {!isSigningIn && (
+            <FormField
+              title="Username"
+              value={name}
+              handleChangeText={setName}
+            />
+          )}
+          <FormField
+            title="Email"
+            value={email}
+            handleChangeText={setEmail}
           />
-        )}
+          <FormField
+            title="Password"
+            value={password}
+            handleChangeText={setPassword}
+          />
 
-        <Input
-          value={email}
-          variant="outline"
-          placeholder="me@example.com"
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoCorrect={false}
-          autoComplete="email"
-          editable={!loading}
-        />
+          {!!error && <Text style={styles.errorText}>{error}</Text>}
 
-        <FormField
-          title="Password"
-          value={password}
-          handleChangeText={setPassword}
-          otherStyles="my-4"
-        />
+          <Button
+            style={[styles.button, {backgroundColor:lightColors.brand}]}
+            onPress={handleAuth}
+            disabled={loading}
+            loading={loading}
+          >
+            {isSigningIn ? "Sign In" : "Sign Up"}
+          </Button>
 
-        {!!error && <Text style={{ color: "red", textAlign: "center" }}>{error}</Text>}
-
-        <Button onPress={handleAuth} disabled={loading} loading={loading}>
-          {isSigningIn ? "Login" : "Create new account"}
-        </Button>
-
-        <Button
+          <Button
           variant="link"
           onPress={() => changeStep(isSigningIn ? "signUp" : "signIn")}
           disabled={loading}
         >
           {isSigningIn
-            ? "Create new account"
+            ? "Create account, if you don't have one"
             : "Already have an account? Login"}
         </Button>
-      </CardContent>
-    </Card>
+        </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  innerContainer: {
+    width: "100%",
+  },
+  title: {
+    color: "#fff",
+    fontSize: 48,
+    fontWeight: "800",
+    maxWidth:200,
+    lineHeight:45,
+    textAlign: "left",
+    marginBottom: 36,
+  },
+  form: {
+    width: "100%",
+    gap: 12,
+  },
+  button: {
+    marginVertical: 12,
+    backgroundColor: "#22c55e",
+    borderRadius: 8,
+    paddingVertical: 14,
+  },
+  switchText: {
+    textAlign: "center",
+    marginTop: 16,
+    textDecorationLine: "underline",
+    opacity: 0.8,
+  },
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    marginVertical: 4,
+  },
+});
