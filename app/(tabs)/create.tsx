@@ -18,16 +18,24 @@ import { Text } from "@/components/ui/text";
 import { useColor } from "@/hooks/useColor";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@/components/ui/button";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 const screenWidth = Dimensions.get("window").width;
 
 const AddPostScreen = () => {
+  const createPost = useMutation(api.posts.createPost);
   const [postText, setPostText] = useState("");
-  const [image, setImage] = useState<string | null>(null);
+  const [image, setImage] = useState<ImagePicker.ImagePickerAsset | null>(null);
   const [imageHeight, setImageHeight] = useState<number | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+
+  const CLOUDINARY_UPLOAD_URL =
+    "https://api.cloudinary.com/v1_1/dsns1khez/image/upload";
+  const CLOUDINARY_UPLOAD_PRESET = "framez";
+  const CLOUDINARY_FOLDER = "posts";
 
   const cardColor = useColor("card");
   const borderColor = useColor("border");
@@ -49,12 +57,15 @@ const AddPostScreen = () => {
       quality: 1,
     });
     if (!result.canceled) {
-      const uri = result.assets[0].uri;
-      setImage(uri);
-      getImageDimensions(uri);
+      const upimage = result.assets[0];
+      setImage(upimage);
+      getImageDimensions(upimage.uri);
       setIsModalVisible(false);
     } else {
-      setTimeout(() => Alert.alert("Image picked", "You did not take any image"), 100);
+      setTimeout(
+        () => Alert.alert("Image picked", "You did not take any image"),
+        100
+      );
     }
   };
 
@@ -66,38 +77,73 @@ const AddPostScreen = () => {
     });
 
     if (!result.canceled) {
-      const uri = result.assets[0].uri;
-      setImage(uri);
-      getImageDimensions(uri);
+      const upimage = result.assets[0];
+      setImage(upimage);
+      getImageDimensions(upimage.uri);
       setIsModalVisible(false);
     } else {
-      setTimeout(() => Alert.alert("Image picked", "You did not select any image"), 100);
+      setTimeout(
+        () => Alert.alert("Image picked", "You did not select any image"),
+        100
+      );
     }
   };
 
-  const handlePost = () => {
+  const handlePost = async () => {
     if (!postText.trim() && !image) {
       setIsError(true);
       Alert.alert("Error", "Please enter some text or add an image!");
       return;
     }
 
-    setLoading(true);
+    try {
+      setLoading(true);
+      let imageUrl = "";
 
-    const newPost = {
-      text: postText,
-      image,
-      createdAt: new Date().toISOString(),
-    };
+      // ✅ Upload to Cloudinary
+      if (image) {
+        const formData = new FormData();
+        formData.append("file", {
+          uri: image.uri,
+          type: image.mimeType || "image/jpeg",
+          name: image.fileName || "upload.jpg",
+        } as unknown as Blob);
+        formData.append("upload_preset", "framez");
+        formData.append("folder", "posts");
 
-    console.log("Post created:", newPost);
+        const res = await fetch("https://api.cloudinary.com/v1_1/dsns1khez/image/upload", {
+          method: "POST",
+          body: formData,
+        });
 
-    setPostText("");
-    setImage(null);
-    setImageHeight(null);
-    setIsError(false);
-    setLoading(false);
-    Alert.alert("Success", "Post ready!");
+        const data = await res.json();
+        imageUrl = data.secure_url;
+        console.log('image update', imageUrl);
+      }
+
+      // Replace with your real user data
+      const userId = "current-user-id";
+      const author = "Fortunate";
+
+      // ✅ Create post in Convex
+      await createPost({
+        text: postText,
+        image: imageUrl,
+        userId,
+        author,
+      });
+
+      setPostText("");
+      setImage(null);
+      setImageHeight(null);
+      setIsError(false);
+      Alert.alert("Success", "Post uploaded!");
+    } catch (error) {
+      console.error("Error creating post:", error);
+      Alert.alert("Error", "Failed to upload post");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -107,7 +153,17 @@ const AddPostScreen = () => {
         style={{ flex: 1 }}
       >
         <ScrollView contentContainerStyle={{ padding: 20, gap: 16 }}>
-          <Text variant="heading">Create Post</Text>
+          <View>
+            <Text variant="heading" style={{ marginBottom: 5 }}>
+              Create Post
+            </Text>
+            <Text
+              variant="caption"
+              style={{ marginBottom: 20, maxWidth: "70%" }}
+            >
+              Write or post whatever you like, nobody cares anyway.
+            </Text>
+          </View>
 
           <TextInput
             style={[
@@ -134,7 +190,7 @@ const AddPostScreen = () => {
           >
             {image ? (
               <Image
-                source={{ uri: image }}
+                source={{ uri: image.uri }}
                 style={[styles.image, { height: imageHeight || 200 }]}
                 resizeMode="cover"
               />
@@ -149,6 +205,7 @@ const AddPostScreen = () => {
           <Button onPress={handlePost} disabled={loading} loading={loading}>
             {loading ? "Posting..." : "Post"}
           </Button>
+          <View style={{ marginBottom: 50 }} />
         </ScrollView>
 
         {/* Image Picker Modal */}
@@ -159,22 +216,40 @@ const AddPostScreen = () => {
           onRequestClose={() => setIsModalVisible(false)}
         >
           <View style={styles.modalBackground}>
-            <View style={[styles.modalContainer, { backgroundColor: cardColor }]}>
+            <View
+              style={[styles.modalContainer, { backgroundColor: cardColor }]}
+            >
               <Text
                 variant="heading"
-                style={{ textAlign: "center", marginBottom: 12, color: primaryColor }}
+                style={{
+                  textAlign: "center",
+                  marginBottom: 12,
+                  color: primaryColor,
+                }}
               >
                 Choose Image Source
               </Text>
-              <TouchableOpacity style={[styles.modalButton]} onPress={openCamera}>
+              <TouchableOpacity
+                style={[styles.modalButton]}
+                onPress={openCamera}
+              >
                 <Camera size={20} color={primaryColor} />
-                <Text variant="body" style={{ fontSize: 16, color: primaryColor }}>
+                <Text
+                  variant="body"
+                  style={{ fontSize: 16, color: primaryColor }}
+                >
                   Use Camera
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.modalButton]} onPress={openPicker}>
+              <TouchableOpacity
+                style={[styles.modalButton]}
+                onPress={openPicker}
+              >
                 <Images size={20} color={primaryColor} />
-                <Text variant="body" style={{ fontSize: 16, color: primaryColor }}>
+                <Text
+                  variant="body"
+                  style={{ fontSize: 16, color: primaryColor }}
+                >
                   Upload from Gallery
                 </Text>
               </TouchableOpacity>
@@ -182,7 +257,10 @@ const AddPostScreen = () => {
                 style={[styles.modalButton]}
                 onPress={() => setIsModalVisible(false)}
               >
-                <Text variant="body" style={{ fontSize: 16, color: primaryColor }}>
+                <Text
+                  variant="body"
+                  style={{ fontSize: 16, color: primaryColor }}
+                >
                   Cancel
                 </Text>
               </TouchableOpacity>

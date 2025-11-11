@@ -5,6 +5,14 @@ import { defineSchema, defineTable } from 'convex/server';
 export default defineSchema({
   ...authTables,
 
+   posts: defineTable({
+    text: v.string(),
+    image: v.optional(v.string()),
+    userId: v.string(),
+    author: v.string(),
+    createdAt: v.number(),
+  }),
+
   users: defineTable({
     email: v.optional(v.string()),
     phone: v.optional(v.string()),
