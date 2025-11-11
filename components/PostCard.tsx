@@ -3,8 +3,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { View } from "./ui/view";
 import { Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Text } from "./ui/text";
-import { images } from "@/constants";
-import { useUserStore } from "@/store/useUserStore";
 import { formatTimeAgo } from "@/lib/utils";
 import { router } from "expo-router";
 
@@ -70,7 +68,7 @@ export default PostCard;
 
 const styles = StyleSheet.create({
   postCard: {
-    padding: 12,
+    padding: 10,
     borderWidth: 1,
     borderRadius: 16,
     marginVertical: 8,
@@ -99,7 +97,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   imageCard: {
-    borderRadius: 18,
+    borderRadius: 10,
     width: "100%",
     height: 300,
     marginTop: 8,
