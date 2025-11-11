@@ -1,18 +1,18 @@
-import { v } from 'convex/values';
-import { authTables } from '@convex-dev/auth/server';
-import { defineSchema, defineTable } from 'convex/server';
+import { v } from "convex/values";
+import { authTables } from "@convex-dev/auth/server";
+import { defineSchema, defineTable } from "convex/server";
 
 export default defineSchema({
   ...authTables,
 
-   posts: defineTable({
+  posts: defineTable({
     text: v.string(),
     image: v.optional(v.string()),
     userId: v.string(),
     author: v.string(),
     createdAt: v.number(),
   }),
-
+  
   users: defineTable({
     email: v.optional(v.string()),
     phone: v.optional(v.string()),
@@ -26,6 +26,7 @@ export default defineSchema({
     isAnonymous: v.optional(v.boolean()),
     githubId: v.optional(v.number()),
   })
-    .index('email', ['email'])
-    .index('phone', ['phone']),
+    .index("email", ["email"])
+    .index("phone", ["phone"])
+    
 });

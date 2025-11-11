@@ -11,7 +11,6 @@ const PostCard = () => {
 
   const cardColor = useColor("card");
   const borderColor = useColor("border");
-  // Replace with real image if exists
   const image: string = "";
 
   return (

@@ -32,11 +32,6 @@ const AddPostScreen = () => {
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  const CLOUDINARY_UPLOAD_URL =
-    "https://api.cloudinary.com/v1_1/dsns1khez/image/upload";
-  const CLOUDINARY_UPLOAD_PRESET = "framez";
-  const CLOUDINARY_FOLDER = "posts";
-
   const cardColor = useColor("card");
   const borderColor = useColor("border");
   const primaryColor = useColor("primary");
@@ -53,6 +48,7 @@ const AddPostScreen = () => {
   const openCamera = async () => {
     const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ["images"],
+      allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
@@ -72,6 +68,7 @@ const AddPostScreen = () => {
   const openPicker = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
+      allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
@@ -111,14 +108,17 @@ const AddPostScreen = () => {
         formData.append("upload_preset", "framez");
         formData.append("folder", "posts");
 
-        const res = await fetch("https://api.cloudinary.com/v1_1/dsns1khez/image/upload", {
-          method: "POST",
-          body: formData,
-        });
+        const res = await fetch(
+          "https://api.cloudinary.com/v1_1/dsns1khez/image/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
 
         const data = await res.json();
         imageUrl = data.secure_url;
-        console.log('image update', imageUrl);
+        console.log("image update", imageUrl);
       }
 
       // Replace with your real user data

@@ -97,8 +97,8 @@ export const Button = forwardRef<View, ButtonProps>(
           break;
         case 'icon':
           Object.assign(baseStyle, {
-            height: HEIGHT,
-            width: HEIGHT,
+            height: 40,
+            width: 40,
             paddingHorizontal: 0,
           });
           break;

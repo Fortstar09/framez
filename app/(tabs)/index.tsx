@@ -1,51 +1,94 @@
-import PostCard from "@/components/PostCard";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ScrollView } from "@/components/ui/scroll-view";
+import React, { useState, useCallback } from "react";
+import {
+  View,
+  FlatList,
+  RefreshControl,
+  ActivityIndicator,
+  StyleSheet,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Text } from "@/components/ui/text";
-import { View } from "@/components/ui/view";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useColor } from "@/hooks/useColor";
 import { useUserStore } from "@/store/useUserStore";
-import {  lightColors } from "@/theme/colors";
-import { StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-
+import { lightColors } from "@/theme/colors";
+import PostCard from "@/components/PostCard";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 export default function HomeScreen() {
   const user = useUserStore((state) => state.currentUser);
-
   const borderColor = useColor("border");
+  const textColor = useColor("text");
+
+  const [refreshing, setRefreshing] = useState(false);
+  const [manualReloadKey, setManualReloadKey] = useState(0); // force reload
+
+  // ⛔ Disable auto-live updates by using key trick
+  const posts = useQuery(api.posts.getPosts);
+
+  const handleReload = useCallback(() => {
+    setRefreshing(true);
+    // trigger re-render → refetch
+    setManualReloadKey((prev) => prev + 1);
+    setTimeout(() => setRefreshing(false), 1000);
+  }, []);
+
   const image: string = "";
 
   return (
-    <SafeAreaView style={{flex: 1,}}>
-      <View>
-        <View style={[styles.headerContent, { borderColor }]}>
-          <Text variant="heading" style={{ color: lightColors.brand }}>
-            Framez
-          </Text>
-          <Avatar size={36}>
-            {image ? (
-              <AvatarImage source={{ uri: image }} />
-            ) : (
-              <AvatarFallback
-                style={{ backgroundColor: lightColors.brand }}
-                textStyle={{
-                  color: "white",
-                  fontWeight: "bold",
-                  textTransform: "capitalize",
-                }}
-              >
-                {user?.name?.slice(0, 2) ?? "AB"}
-              </AvatarFallback>
-            )}
-          </Avatar>
-        </View>
-        <ScrollView style={styles.allPostSection}>
-          <PostCard />
-          <PostCard />
-          <View style={{marginBottom:250}} />
-        </ScrollView>
+    <SafeAreaView style={{ flex: 1 }}>
+      {/* Header */}
+      <View style={[styles.headerContent, { borderColor }]}>
+        <Text variant="heading" style={{ color: lightColors.brand }}>
+          Framez
+        </Text>
+        <Avatar size={36}>
+          {image ? (
+            <AvatarImage source={{ uri: image }} />
+          ) : (
+            <AvatarFallback
+              style={{ backgroundColor: lightColors.brand }}
+              textStyle={{
+                color: "white",
+                fontWeight: "bold",
+                textTransform: "capitalize",
+              }}
+            >
+              {user?.name?.slice(0, 2) ?? "AB"}
+            </AvatarFallback>
+          )}
+        </Avatar>
       </View>
+
+      {/* Posts */}
+      {posts === undefined ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color={lightColors.brand} />
+          <Text style={{ marginTop: 10, color: textColor }}>
+            Loading posts...
+          </Text>
+        </View>
+      ) : posts.length === 0 ? (
+        <View style={styles.loaderContainer}>
+          <Text>No posts yet. Be the first to post!</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={posts}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => <PostCard />}
+          contentContainerStyle={styles.allPostSection}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleReload}
+              colors={[lightColors.brand]}
+            />
+          }
+          showsVerticalScrollIndicator={false}
+        />
+      )}
     </SafeAreaView>
   );
 }
@@ -61,22 +104,12 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   allPostSection: {
-    paddingVertical: 30,
+    paddingVertical: 20,
     paddingHorizontal: 20,
-    flexDirection: "column",
-    paddingBottom:300,
   },
-  postCard: {
-    gap: 10,
-  },
-  postImage: {
-    borderRadius: 8,
-    borderWidth: 1,
+  loaderContainer: {
+    flex: 1,
     alignItems: "center",
-  },
-  imageCard: {
-    borderRadius: 8,
-    width: "100%",
-    height: 500,
+    justifyContent: "center",
   },
 });

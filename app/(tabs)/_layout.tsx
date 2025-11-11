@@ -101,11 +101,12 @@ const TabSubLayout = () => {
         tabBarStyle: {
           position: "absolute",
           bottom: 35,
-          width: "80%",
+          width: "100%",
           left: 20,
           right: 20,
           height: 60,
-          borderRadius: 24,
+          borderRadius: 10,
+          marginHorizontal: 0,
           borderWidth: 1,
           borderColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.1)",
           backgroundColor: isDark
@@ -137,16 +138,6 @@ const TabSubLayout = () => {
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <Icon name={CirclePlus} size={24} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: "Explore",
-          headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <Icon name={Stars} size={24} color={color} />
           ),
         }}
       />

@@ -1,49 +1,177 @@
-import { SignOutButton } from '@/components/auth/singout';
-import { ModeToggle } from '@/components/ui/mode-toggle';
-import { ScrollView } from '@/components/ui/scroll-view';
-import { Text } from '@/components/ui/text';
-import { View } from '@/components/ui/view';
-import { useUserStore } from '@/store/useUserStore';
+import React from "react";
+import { View, StyleSheet, FlatList, Image } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Text } from "@/components/ui/text";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { useColor } from "@/hooks/useColor";
+import { useUserStore } from "@/store/useUserStore";
+import { lightColors } from "@/theme/colors";
+import { LogOut, LogOutIcon } from "lucide-react-native";
+import { ModeToggle } from "@/components/ui/mode-toggle";
+import PostCard from "@/components/PostCard";
 
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+const ProfileScreen = () => {
+  const user = useUserStore((state) => state.currentUser);
 
+  const cardColor = useColor("card");
+  const borderColor = useColor("border");
+  const primaryColor = useColor("primary");
+  const textColor = useColor("text");
+  const bgColor = useColor("background");
 
-export default function ProfileScreen() {
-  // const router = useRouter();
-  const bottom = useBottomTabBarHeight();
+  const posts = [
+    { id: "1", text: "My first post!", image: "" },
+    { id: "2", text: "Loving this app!", image: "" },
+  ];
 
-const user = useUserStore((state) => state.currentUser);
-  // const allTodos = useQuery() 
   return (
-    <ScrollView
-      style={{ flex: 1 }}
-      contentContainerStyle={{ padding: 20, paddingBottom: bottom }}
-      showsVerticalScrollIndicator={false}
-    >
+    <SafeAreaView style={[styles.container, { backgroundColor: bgColor }]}>
+      {/* Header Section */}
       <View
         style={{
-          paddingTop: 64,
-          paddingBottom: 20,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 20,
         }}
       >
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <Text variant='heading'>Profile</Text>
-
-          <ModeToggle />
-        </View>
-        <View>
-          <Text variant='heading'>{user?.name}</Text>
-          <Text variant='heading'>{user?.email}</Text>
-        </View>
-                <SignOutButton />
-        
+        <ModeToggle variant="outline" />
+        <LogOut color={lightColors.red} size={20} />
       </View>
-    </ScrollView>
+      <View style={styles.header}>
+        {user?.image ? (
+          <View
+            style={{
+              width: 60,
+              height: 60,
+              backgroundColor: lightColors.brand,
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 4,
+              borderWidth: 1,
+              borderColor: lightColors.brand,
+            }}
+          >
+            <Image
+              source={{ uri: user.image }}
+              resizeMode="cover"
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 4,
+                borderWidth: 1,
+                borderColor: lightColors.brand,
+              }}
+            />
+          </View>
+        ) : (
+          <View
+            style={{
+              width: 60,
+              height: 60,
+              backgroundColor: lightColors.brand,
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 4,
+              borderWidth: 1,
+              borderColor: lightColors.brand,
+            }}
+          >
+            <Text
+              style={{
+                backgroundColor: lightColors.brand,
+                fontSize: 32,
+                textTransform: "uppercase",
+                color: "white",
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            >
+              {user?.name?.slice(0, 2)?.toUpperCase() ?? "AB"}
+            </Text>
+          </View>
+        )}
+        <View style={styles.userInfo}>
+          <Text
+            variant="heading"
+            style={{ fontSize: 24, textAlign: "center", marginTop: 8 }}
+          >
+            {user?.name ?? "Anonymous"}
+          </Text>
+          <Text variant="caption" style={{ color: textColor, opacity: 0.6 }}>
+            {user?.email ?? "noemail@example.com"}
+          </Text>
+          <View style={[styles.infoBox]}>
+            <Text
+              variant="heading"
+              style={{ color: primaryColor, fontSize: 20 }}
+            >
+              {posts.length}
+            </Text>
+            <Text variant="body" style={{ color: textColor, opacity: 0.7 }}>
+              {posts.length === 1 ? "Post" : "Posts"}
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Info Boxes Section */}
+
+      {/* Posts Section */}
+      <View style={styles.postList}>
+        <Text variant="body" style={{ fontSize: 20, marginVertical: 10 }}>
+          Your Posts
+        </Text>
+        <FlatList
+          data={posts}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <PostCard />}
+          ListEmptyComponent={() => (
+            <View style={{ alignItems: "center", marginTop: 20 }}>
+              <Text variant="body" style={{ color: textColor }}>
+                No posts yet
+              </Text>
+            </View>
+          )}
+        />
+      </View>
+    </SafeAreaView>
   );
-}
+};
+
+export default ProfileScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  header: {
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 4,
+  },
+  userInfo: {
+    flexDirection: "column",
+    gap: 2,
+    marginBottom: 12,
+  },
+  infoBox: {
+    alignSelf: "center",
+    flexDirection: "row",
+    gap: 6,
+    paddingVertical: 5,
+    alignItems: "flex-end",
+    marginHorizontal: 5,
+  },
+  postList: {
+    flex: 1,
+  },
+  postCard: {
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+  },
+});
