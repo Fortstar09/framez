@@ -5,18 +5,19 @@ export const createPost = mutation({
   args: {
     text: v.string(),
     image: v.optional(v.string()),
-    userId: v.string(),
-    author: v.string(),
+    authorId: v.string(),
+    authorAva: v.string(),
+    authorName: v.string(),
   },
   handler: async (ctx, args) => {
-    const { text, image, userId, author } = args;
+    const { text, image, authorId, authorAva,  authorName } = args;
 
     return await ctx.db.insert("posts", {
       text,
       image,
-      userId,
-      author,
-      createdAt: Date.now(),
+      authorId,
+      authorAva,
+      authorName,
     });
   },
 });
@@ -31,12 +32,26 @@ export const getPosts = query(async ({ db }) => {
 });
 
 
+export const getUserPosts = query({
+  args: {
+    authorId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const { authorId } = args;
 
-// export const getPostsByAuthor = query(async ({ db }, { authorId }) => {
-//   if (!authorId) return [];
-//   return await db
-//     .query("posts")
-//     .withIndex("by_author", (q) => q.eq("authorId", authorId))
-//     .order("desc")
-//     .collect();
-// });
+    const posts = await ctx.db
+      .query("posts")
+      .filter((q) => q.eq(q.field("authorId"), authorId))
+      .order("desc")
+      .collect();
+
+    return posts;
+  },
+});
+
+export const getPostById = query({
+  args: { id: v.id("posts") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.id);
+  },
+});

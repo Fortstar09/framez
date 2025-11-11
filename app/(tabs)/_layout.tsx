@@ -18,6 +18,7 @@ import { Spinner } from "@/components/ui/spinner";
 import * as Haptics from "expo-haptics";
 import { api } from "@/convex/_generated/api";
 import { useUserStore } from "@/store/useUserStore";
+import { lightColors } from "@/theme/colors";
 
 export default function TabLayout() {
   return (
@@ -26,7 +27,7 @@ export default function TabLayout() {
         <View
           style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
         >
-          <Spinner size="lg" variant="circle" color="#F8D534" />
+          <Spinner size="lg" variant="circle" color={lightColors.brand} />
         </View>
       </AuthLoading>
 
@@ -99,15 +100,9 @@ const TabSubLayout = () => {
           return null;
         },
         tabBarStyle: {
-          position: "absolute",
-          bottom: 35,
           width: "100%",
-          left: 20,
-          right: 20,
           height: 60,
-          borderRadius: 10,
-          marginHorizontal: 0,
-          borderWidth: 1,
+          borderTopWidth: 2,
           borderColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.1)",
           backgroundColor: isDark
             ? "rgba(20,20,20,0.9)"

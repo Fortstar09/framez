@@ -2,29 +2,22 @@ import React from "react";
 import { View, StyleSheet, FlatList, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text } from "@/components/ui/text";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { useColor } from "@/hooks/useColor";
 import { useUserStore } from "@/store/useUserStore";
 import { lightColors } from "@/theme/colors";
-import { LogOut, LogOutIcon } from "lucide-react-native";
+import { LogOut} from "lucide-react-native";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import PostCard from "@/components/PostCard";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 const ProfileScreen = () => {
   const user = useUserStore((state) => state.currentUser);
-
-  const cardColor = useColor("card");
-  const borderColor = useColor("border");
   const primaryColor = useColor("primary");
   const textColor = useColor("text");
   const bgColor = useColor("background");
 
-  const posts = [
-    { id: "1", text: "My first post!", image: "" },
-    { id: "2", text: "Loving this app!", image: "" },
-  ];
-
+  const posts = useQuery(api.posts.getUserPosts,  user?._id ? { authorId: user._id } : "skip");
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: bgColor }]}>
       {/* Header Section */}
@@ -59,7 +52,7 @@ const ProfileScreen = () => {
               style={{
                 width: 60,
                 height: 60,
-                borderRadius: 4,
+                borderRadius: 8,
                 borderWidth: 1,
                 borderColor: lightColors.brand,
               }}
@@ -73,7 +66,7 @@ const ProfileScreen = () => {
               backgroundColor: lightColors.brand,
               justifyContent: "center",
               alignItems: "center",
-              borderRadius: 4,
+              borderRadius: 8,
               borderWidth: 1,
               borderColor: lightColors.brand,
             }}
@@ -107,10 +100,10 @@ const ProfileScreen = () => {
               variant="heading"
               style={{ color: primaryColor, fontSize: 20 }}
             >
-              {posts.length}
+              {posts?.length}
             </Text>
             <Text variant="body" style={{ color: textColor, opacity: 0.7 }}>
-              {posts.length === 1 ? "Post" : "Posts"}
+              {posts?.length === 1 ? "Post" : "Posts"}
             </Text>
           </View>
         </View>
@@ -123,10 +116,22 @@ const ProfileScreen = () => {
         <Text variant="body" style={{ fontSize: 20, marginVertical: 10 }}>
           Your Posts
         </Text>
-        <FlatList
+        <FlatList<PostCardProps>
           data={posts}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <PostCard />}
+          keyExtractor={(item) => item._id}
+          renderItem={({ item }) => (
+            <PostCard
+              _id={item._id}
+              image={item.image}
+              text={item.text}
+              authorAva={item.authorAva}
+              authorId={item.authorId}
+              authorName={item.authorName}
+              _creationTime={item._creationTime}
+            />
+          )}
+          showsVerticalScrollIndicator={false}
+
           ListEmptyComponent={() => (
             <View style={{ alignItems: "center", marginTop: 20 }}>
               <Text variant="body" style={{ color: textColor }}>

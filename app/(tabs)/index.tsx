@@ -5,6 +5,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   StyleSheet,
+  TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text } from "@/components/ui/text";
@@ -15,6 +16,7 @@ import { lightColors } from "@/theme/colors";
 import PostCard from "@/components/PostCard";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { router } from "expo-router";
 
 export default function HomeScreen() {
   const user = useUserStore((state) => state.currentUser);
@@ -43,22 +45,24 @@ export default function HomeScreen() {
         <Text variant="heading" style={{ color: lightColors.brand }}>
           Framez
         </Text>
-        <Avatar size={36}>
-          {image ? (
-            <AvatarImage source={{ uri: image }} />
-          ) : (
-            <AvatarFallback
-              style={{ backgroundColor: lightColors.brand }}
-              textStyle={{
-                color: "white",
-                fontWeight: "bold",
-                textTransform: "capitalize",
-              }}
-            >
-              {user?.name?.slice(0, 2) ?? "AB"}
-            </AvatarFallback>
-          )}
-        </Avatar>
+        <TouchableOpacity onPress={() => router.push("/profile")}>
+          <Avatar size={36}>
+            {image ? (
+              <AvatarImage source={{ uri: image }} />
+            ) : (
+              <AvatarFallback
+                style={{ backgroundColor: lightColors.brand }}
+                textStyle={{
+                  color: "white",
+                  fontWeight: "bold",
+                  textTransform: "capitalize",
+                }}
+              >
+                {user?.name?.slice(0, 2) ?? "AB"}
+              </AvatarFallback>
+            )}
+          </Avatar>
+        </TouchableOpacity>
       </View>
 
       {/* Posts */}
@@ -74,10 +78,20 @@ export default function HomeScreen() {
           <Text>No posts yet. Be the first to post!</Text>
         </View>
       ) : (
-        <FlatList
+        <FlatList<PostCardProps>
           data={posts}
           keyExtractor={(item) => item._id}
-          renderItem={({ item }) => <PostCard />}
+          renderItem={({ item }) => (
+            <PostCard
+              _id={item._id}
+              image={item.image}
+              text={item.text}
+              authorAva={item.authorAva}
+              authorId={item.authorId}
+              authorName={item.authorName}
+              _creationTime={item._creationTime}
+            />
+          )}
           contentContainerStyle={styles.allPostSection}
           refreshControl={
             <RefreshControl

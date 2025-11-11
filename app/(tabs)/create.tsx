@@ -20,11 +20,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@/components/ui/button";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useUserStore } from "@/store/useUserStore";
 
 const screenWidth = Dimensions.get("window").width;
 
 const AddPostScreen = () => {
   const createPost = useMutation(api.posts.createPost);
+    const user = useUserStore((state) => state.currentUser);
+
   const [postText, setPostText] = useState("");
   const [image, setImage] = useState<ImagePicker.ImagePickerAsset | null>(null);
   const [imageHeight, setImageHeight] = useState<number | null>(null);
@@ -48,7 +51,6 @@ const AddPostScreen = () => {
   const openCamera = async () => {
     const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ["images"],
-      allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
@@ -68,7 +70,6 @@ const AddPostScreen = () => {
   const openPicker = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
-      allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
     });
@@ -118,19 +119,19 @@ const AddPostScreen = () => {
 
         const data = await res.json();
         imageUrl = data.secure_url;
-        console.log("image update", imageUrl);
       }
 
-      // Replace with your real user data
-      const userId = "current-user-id";
-      const author = "Fortunate";
+      const authorId = user?._id ?? '12345678263';
+      const authorAva = user?.image ?? '';
+      const authorName = user?.name ?? "Anonymous";
 
       // ✅ Create post in Convex
       await createPost({
         text: postText,
         image: imageUrl,
-        userId,
-        author,
+        authorId,
+        authorAva,
+        authorName,
       });
 
       setPostText("");
@@ -140,7 +141,7 @@ const AddPostScreen = () => {
       Alert.alert("Success", "Post uploaded!");
     } catch (error) {
       console.error("Error creating post:", error);
-      Alert.alert("Error", "Failed to upload post");
+      Alert.alert("Error", "Failed to upload post, Check your internet connection");
     } finally {
       setLoading(false);
     }

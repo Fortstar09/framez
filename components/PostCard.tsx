@@ -1,23 +1,34 @@
 import { useColor } from "@/hooks/useColor";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { View } from "./ui/view";
-import { Image, StyleSheet } from "react-native";
+import { Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Text } from "./ui/text";
 import { images } from "@/constants";
 import { useUserStore } from "@/store/useUserStore";
+import { formatTimeAgo } from "@/lib/utils";
+import { router } from "expo-router";
 
-const PostCard = () => {
-  const user = useUserStore((state) => state.currentUser);
-
+const PostCard = ({
+  _id,
+  authorAva,
+  authorId,
+  authorName,
+  image,
+  text,
+  _creationTime,
+}: PostCardProps) => {
   const cardColor = useColor("card");
   const borderColor = useColor("border");
-  const image: string = "";
 
   return (
-    <View style={[styles.postCard, { backgroundColor: cardColor, borderColor }]}>
+    <TouchableOpacity
+      activeOpacity={0.9}
+      onPress={()=>router.push(`/post/${_id}`)}
+      style={[styles.postCard, { backgroundColor: cardColor, borderColor }]}
+    >
       <View style={styles.header}>
         <Avatar size={32}>
-          {image ? (
+          {authorAva ? (
             <AvatarImage source={{ uri: image }} />
           ) : (
             <AvatarFallback
@@ -28,32 +39,30 @@ const PostCard = () => {
                 textTransform: "capitalize",
               }}
             >
-              {user?.name?.slice(0, 2) ?? "AB"}
+              {authorName?.slice(0, 2) ?? "AB"}
             </AvatarFallback>
           )}
         </Avatar>
         <View style={styles.userInfo}>
-          <Text style={styles.userName}>{user?.name ?? "Username"}</Text>
+          <Text style={styles.userName}>{authorName ?? "Anon"}</Text>
           <Text variant="caption" style={styles.timeText}>
-            2 mins ago
+            {formatTimeAgo(_creationTime)}
           </Text>
         </View>
       </View>
 
       <Text variant="body" style={styles.postText}>
-        A glimpse into the world where creativity knows no bounds, where
-        every pixel tells a story, and imagination paints realities we’ve never
-        seen before.
+        {text}
       </Text>
 
-      {images.clear1 && (
+      {image && (
         <Image
-          source={images.clear4}
+          source={{ uri: image }}
           resizeMode="cover"
           style={styles.imageCard}
         />
       )}
-    </View>
+    </TouchableOpacity>
   );
 };
 

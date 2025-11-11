@@ -8,9 +8,9 @@ export default defineSchema({
   posts: defineTable({
     text: v.string(),
     image: v.optional(v.string()),
-    userId: v.string(),
-    author: v.string(),
-    createdAt: v.number(),
+    authorId: v.string(),
+    authorAva: v.optional(v.string()),
+    authorName: v.string(),
   }),
   
   users: defineTable({
