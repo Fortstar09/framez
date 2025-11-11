@@ -1,3 +1,4 @@
+import { SignOutButton } from '@/components/auth/singout';
 import { ModeToggle } from '@/components/ui/mode-toggle';
 import { ScrollView } from '@/components/ui/scroll-view';
 import { Text } from '@/components/ui/text';
@@ -37,11 +38,11 @@ const user = useUserStore((state) => state.currentUser);
           <ModeToggle />
         </View>
         <View>
-          <Text variant='heading'>{user ? user.name : 'Hello'}</Text>
-          <Text variant='heading'>{user ? user.email : 'Hello'}</Text>
-          <Text variant='heading'>{user ? user.gender : 'Hello'}</Text>
-          <Text variant='heading'>{user ? user.name : 'Hello'}</Text>
+          <Text variant='heading'>{user?.name}</Text>
+          <Text variant='heading'>{user?.email}</Text>
         </View>
+                <SignOutButton />
+        
       </View>
     </ScrollView>
   );

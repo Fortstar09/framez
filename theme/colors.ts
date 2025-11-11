@@ -1,4 +1,7 @@
 const lightColors = {
+// brand
+brand:'#10b981',
+
   // Base colors
   background: '#FFFFFF',
   foreground: '#000000',
