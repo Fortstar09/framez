@@ -1,178 +1,94 @@
-# BNA UI 🚀
+# Framez 📱
 
-![BNA UI Header](https://bna-ui.s3.eu-north-1.amazonaws.com/bna-ui-header.png)
+A mobile social application built with [React Native](https://reactnative.dev/) that allows users to share posts with text and images. Users can create posts, view a feed of all posts, and manage their profile with their own content.
 
-**B**uild **N**ative **A**pps - A powerful CLI for creating Expo React Native applications with a beautiful UI component library.
+Built with [BNA UI](https://bna-ui.vercel.app/) component library for a consistent and polished user interface and [Zustand](https://zustand-demo.pmnd.rs/) for lightweight state management.
 
-## ✨ Features
+## 🚀 Preview App
 
-- 🎨 **Beautiful UI Components** - Pre-built, customizable components with modern design
-- 🌙 **Theme Support** - Built-in light/dark mode with seamless transitions
-- 📱 **Expo Router Ready** - Complete navigation setup with tab and stack navigation
-- 🎯 **TypeScript First** - Full TypeScript support with excellent IntelliSense
-- 📦 **Flexible Package Manager** - Works with npm, yarn, or pnpm
-- 🚀 **Zero Configuration** - Get started in seconds with sensible defaults
-- 🔧 **Highly Customizable** - Easily customize colors, spacing, and components
-- 📲 **Cross-Platform** - Perfect compatibility across iOS and Android
-- ⚡ **Performance Optimized** - Lightweight and fast components
-- 🎭 **Animation Ready** - Smooth animations with React Native Reanimated
+- [📱 Preview App](https://appetize.io/app/b_qnaougo6iruxpkswmbqdqzlp3y) - Try it on Appetize.io
+- [📥 Download App](https://drive.google.com/drive/folders/11mvfRN4UsdvxpJO8FaaWLzbZHhZIbe-r?usp=drive_link) - Download APK/IPA
+- [🎥 Watch Demo](https://drive.google.com/drive/folders/11mvfRN4UsdvxpJO8FaaWLzbZHhZIbe-r?usp=drive_link) - 2-3 minute walkthrough
 
-## 📦 Installation
+## 🏗️ Backend Architecture
 
+This project uses [**Convex**](https://www.convex.dev/) as the backend platform for several key reasons:
+
+**Real-time by Default**: Convex provides real-time data synchronization out of the box, eliminating the need for complex WebSocket setup or polling mechanisms.
+
+**Serverless Architecture**: No infrastructure management required. Convex handles scaling, hosting, and database operations automatically.
+
+**Type-Safe**: Full TypeScript support across frontend and backend ensures type safety throughout the entire stack.
+
+**Built-in Authentication**: [Convex Auth](https://docs.convex.dev/auth) provides secure user authentication without additional third-party services.
+
+**Reactive Queries**: Automatically updates UI when data changes, providing a seamless user experience.
+
+## ✨ Features Implemented
+
+- **Authentication**: Secure sign-up, login, and logout with persistent sessions
+- **Post Creation**: Create posts with text and/or images
+- **Feed**: View all posts from users in chronological order
+- **Profile Management**: View user profile with personal information and posts
+- **Real-time Updates**: Posts and feed update automatically across devices
+
+## Setup Instructions
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) v18 or higher
+- npm or yarn
+- [Expo CLI](https://docs.expo.dev/get-started/installation/) (`npm install -g expo-cli`)
+
+### Installation
+
+1. Clone the repository
 ```bash
-# The fastest way to set up BNA UI in your Expo project:
-npx bna-ui init
-
-# Navigate to your Expo project
-cd bna-app
-
-# Start adding components
-npx bna-ui add button
-npx bna-ui add card
-npx bna-ui add input
+git clone https://github.com/yourusername/project-name.git
+cd project-name
 ```
 
-## 🎨 Available Components
-
-| Component      | Description                       | Status         |
-| -------------- | --------------------------------- | -------------- |
-| `Button`       | Customizable button with variants | ✅ Available   |
-| `Card`         | Container component with shadow   | ✅ Available   |
-| `Input`        | Text input with validation        | ✅ Available   |
-| `Bottom Sheet` | Overlay modal component           | ✅ Available   |
-| `Spinner`      | Loading spinner and skeletons     | ✅ Available   |
-| `Avatar`       | User profile image component      | ✅ Available   |
-| `Badge`        | Small status indicator            | ✅ Available   |
-| `Date Picker`  | Date Picker component             | ✅ Available   |
-| `Switch`       | Toggle switch component           | ✅ Available   |
-| `Progress`     | Range progress component          | ✅ Available   |
-| `Charts`       | Charts components.                | 🔄 Coming Soon |
-
-## 🎯 Usage Example
-
-```tsx
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { View } from '@/components/ui/view';
-
-export default function HomeScreen() {
-  return (
-    <View style={{ flex: 1, padding: 20 }}>
-      <Card>
-        <Input placeholder='Enter your email' keyboardType='email-address' />
-        <Button
-          variant='success'
-          onPress={() => console.log('Button pressed!')}
-        >
-          Get Started
-        </Button>
-      </Card>
-    </View>
-  );
-}
-```
-
-## 🌙 Theme Configuration
-
-BNA UI comes with a flexible theming system:
-
-```tsx
-// theme/colors.ts
-export const lightTheme = {
-  colors: {
-    background: '#FFFFFF',
-    foreground: '#000000',
-    card: '#F2F2F7',
-    cardForeground: '#000000',
-    popover: '#F2F2F7',
-    popoverForeground: '#000000',
-    primary: '#18181b',
-    primaryForeground: '#FFFFFF',
-    secondary: '#F2F2F7',
-    secondaryForeground: '#18181b',
-    muted: '#78788033',
-    mutedForeground: '#71717a',
-    // ... more colors
-  },
-};
-
-export const darkTheme = {
-  colors: {
-    background: '#000000',
-    foreground: '#FFFFFF',
-    card: '#1C1C1E',
-    cardForeground: '#FFFFFF',
-    popover: '#18181b',
-    popoverForeground: '#FFFFFF',
-    primary: '#e4e4e7',
-    primaryForeground: '#18181b',
-    secondary: '#1C1C1E',
-    secondaryForeground: '#FFFFFF',
-    muted: '#78788033',
-    mutedForeground: '#a1a1aa',
-    // ... more colors
-  },
-};
-```
-
-## 📱 Platform Support
-
-- ✅ **iOS** - Full native iOS support
-- ✅ **Android** - Full native Android support
-- ✅ **Web** - Responsive web support
-- ✅ **Expo Go** - Development with Expo Go
-- ✅ **EAS Build** - Production builds with EAS
-
-## 🛠️ Development
-
+2. Install dependencies
 ```bash
-# Clone the repository
-git clone https://github.com/ahmedbna/bna-ui.git
-cd bna-ui
-
-# Install dependencies
 npm install
-
-# Build for production
-npm run build
 ```
 
-## 🤝 Contributing
+3. Set up environment variables
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+Copy the example environment file and configure it:
+```bash
+cp .env.example .env
+```
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Update the `.env` file with your Convex deployment URL
 
-## 📄 License
+4. Start the development server
+```bash
+npx expo start
+```
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+5. Set up Convex (in a new terminal)
+```bash
+npx convex dev
+```
 
-## 🔗 Links
+This will initialize your Convex deployment and provide your `EXPO_PUBLIC_CONVEX_URL` (add this to your `.env` file)
 
-- 📚 **Documentation**: [https://ui.ahmedbna.com](https://ui.ahmedbna.com)
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/ahmedbna/ui/issues)
-- 💬 **Linkedin**: [@ahmedbna](https://www.linkedin.com/in/ahmedbna/)
-- 𝕏 **X**: [@ahmedbnaa](https://x.com/ahmedbnaa)
+6. Configure Convex Auth
 
-## ⭐ Support
+Set the SITE_URL environment variable (use placeholder for React Native):
+```bash
+npx convex env set SITE_URL http://localhost:3000
+```
 
-If you find BNA UI helpful, please consider giving it a star on GitHub! It helps us a lot.
+Generate authentication keys:
+```bash
+node generateKeys.mjs
+```
 
-[![GitHub stars](https://img.shields.io/github/stars/ahmedbna/ui?style=social)](https://github.com/ahmedbna/ui)
+Copy the output and paste it into your Convex dashboard's Environment Variables page.
 
-## 📈 Stats
-
-![GitHub package.json version](https://img.shields.io/github/package-json/v/ahmedbna/ui)
-![npm](https://img.shields.io/npm/v/bna-ui)
-![npm](https://img.shields.io/npm/dm/bna-ui)
-![GitHub](https://img.shields.io/github/license/ahmedbna/ui)
-
----
-
-Made with ❤️ by [Ahmed BNA](https://github.com/ahmedbna)
+7. Run on device/emulator
+- Press `a` for Android
+- Press `i` for iOS
+- Scan QR code with Expo Go app
