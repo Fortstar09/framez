@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from "react-native";
+import { View, StyleSheet, KeyboardAvoidingView } from "react-native";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { Text } from "@/components/ui/text";
 import FormField from "../FormField";
