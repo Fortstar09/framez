@@ -18,6 +18,8 @@ const PostCard = ({
   const cardColor = useColor("card");
   const borderColor = useColor("border");
 
+console.log('Avatar',authorAva)
+
   return (
     <TouchableOpacity
       activeOpacity={0.9}

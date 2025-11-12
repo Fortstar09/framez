@@ -53,7 +53,7 @@ const FormField = ({
         style={[styles.inputContainer, , { borderColor, backgroundColor: bgColor }]}
       >
         <TextInput
-          style={styles.input}
+          style={[styles.input, {color:textColor}]}
           value={value}
           placeholder={placeholder}
           placeholderTextColor={textColor}

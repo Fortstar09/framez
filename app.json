@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "framez-pro",
-    "slug": "framez-pro",
-    "scheme": "framez-pro",
+    "name": "framez",
+    "slug": "framez",
+    "scheme": "framez",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -22,7 +22,7 @@
         "backgroundColor": "#0A0A0A"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.fortstar.framezpro"
+      "package": "com.fortstar.framez"
     },
     "web": {
       "bundler": "metro",
@@ -48,7 +48,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "6449d1f9-535b-492d-8654-1e60679e9c62"
+        "projectId": "eef4346f-a94b-4a6a-bfdb-b75f8d17fd47"
       }
     }
   }

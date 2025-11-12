@@ -36,8 +36,6 @@ export default function HomeScreen() {
     setTimeout(() => setRefreshing(false), 1000);
   }, []);
 
-  const image: string = "";
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       {/* Header */}
@@ -45,10 +43,11 @@ export default function HomeScreen() {
         <Text variant="heading" style={{ color: lightColors.brand }}>
           Framez
         </Text>
+        
         <TouchableOpacity onPress={() => router.push("/profile")}>
           <Avatar size={36}>
-            {image ? (
-              <AvatarImage source={{ uri: image }} />
+            {user?.image ? (
+              <AvatarImage source={{ uri: user?.image }} />
             ) : (
               <AvatarFallback
                 style={{ backgroundColor: lightColors.brand }}
